@@ -26,9 +26,9 @@
             android:layout_toRightOf="@id/tweet_icon"
             android:padding="@dimen/tweet_ic_padding"/>
         <TextView
+            android:id="@+id/tweet_body"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Hello World!"
             android:layout_alignStart="@id/tweet_date"
             android:layout_alignLeft="@id/tweet_date"
             android:layout_below="@id/tweet_icon"
