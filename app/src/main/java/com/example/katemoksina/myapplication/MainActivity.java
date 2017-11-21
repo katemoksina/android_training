@@ -1,5 +1,6 @@
 package com.example.katemoksina.myapplication;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -27,6 +28,9 @@ public class MainActivity extends AppCompatActivity implements TwitterListMVPVie
     @Inject
     TweetListPresenter tweetListPresenter;
 
+    @Inject
+    Context context;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,7 +41,7 @@ public class MainActivity extends AppCompatActivity implements TwitterListMVPVie
 
         tweetList.setLayoutManager(new LinearLayoutManager(this));
 
-        tweetListAdapter = new TweetListAdapter();
+        tweetListAdapter = new TweetListAdapter(context);
         tweetList.setAdapter(tweetListAdapter);
     }
 

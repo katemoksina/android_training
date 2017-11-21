@@ -1,7 +1,9 @@
 package com.example.katemoksina.myapplication.model;
 
+import android.net.Uri;
 import android.support.annotation.Nullable;
 
+import com.example.katemoksina.myapplication.model.RetweetedStatus;
 import com.google.auto.value.AutoValue;
 import com.google.gson.Gson;
 import com.google.gson.TypeAdapter;
@@ -29,6 +31,10 @@ public abstract class Tweet {
     @SerializedName("retweeted_status")
     public abstract RetweetedStatus retweetedStatus();
 
+    @Nullable
+    @SerializedName("quoted_status")
+    public abstract QuotedStatus quotedStatus();
+
     @SerializedName("entities")
     public abstract Entities entities();
 
@@ -36,11 +42,25 @@ public abstract class Tweet {
         return new AutoValue_Tweet.GsonTypeAdapter(gson);
     }
 
-    /*public String getMediaUrl() {
-        if(retweetedStatus()!=null && retweetedStatus().entities() != null && retweetedStatus().entities().media()!=null) {
-            return retweetedStatus()
+    public ImageUri getImageUri() {
+        Uri uri;
+        if(retweetedStatus()!=null && retweetedStatus().entities() != null &&
+                retweetedStatus().entities().media()!=null && retweetedStatus().entities().media().size() > 0) {
+            Media media = retweetedStatus().entities().media().get(0);
+            uri = Uri.parse(media.mediaUrl());
+            return new ImageUri(uri, media.sizes().small().width(), media.sizes().small().height());
+        } if(quotedStatus()!=null && quotedStatus().entities() != null &&
+                quotedStatus().entities().media()!=null && quotedStatus().entities().media().size() > 0) {
+            Media media = quotedStatus().entities().media().get(0);
+            uri = Uri.parse(media.mediaUrl());
+            return new ImageUri(uri, media.sizes().small().width(), media.sizes().small().height());
+        } else if(entities() != null && entities().media()!= null && entities().media().size() > 0) {
+            Media media = entities().media().get(0);
+            uri = Uri.parse(media.mediaUrl());
+            return new ImageUri(uri, media.sizes().small().width(), media.sizes().small().height());
         }
-    }*/
+        return null;
+    }
 }
 
 

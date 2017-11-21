@@ -2,8 +2,14 @@ package com.example.katemoksina.myapplication;
 
 import com.example.katemoksina.myapplication.model.Tweet;
 
+
+import org.reactivestreams.Subscriber;
+import org.reactivestreams.Subscription;
+
 import java.util.List;
 
+import io.reactivex.Observable;
+import io.reactivex.observers.DefaultObserver;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -25,16 +31,22 @@ public class TweetListPresenterImpl implements TweetListPresenter {
         if (mvpView == null){
             return;
         }
-        Call<List<Tweet>> tweetListCall = tweetListService.getTweets(mvpView.getListId(), mvpView.getTweetCount());
-        tweetListCall.enqueue(new Callback<List<Tweet>>() {
+        Observable<List<Tweet>> tweetListObservable = tweetListService.getTweets(mvpView.getListId(), mvpView.getTweetCount());
+
+        tweetListObservable.subscribe(new DefaultObserver<List<Tweet>>(){
             @Override
-            public void onResponse(Call<List<Tweet>> call, Response<List<Tweet>> response) {
-                mvpView.onTweetsLoaded(response.body());
+            public void onNext(List<Tweet> value) {
+                mvpView.onTweetsLoaded(value);
             }
 
             @Override
-            public void onFailure(Call<List<Tweet>> call, Throwable t) {
-                mvpView.onTweetsLoadError(t);
+            public void onError(Throwable e) {
+                mvpView.onTweetsLoadError(e);
+            }
+
+            @Override
+            public void onComplete() {
+                mvpView.onTweetsLoadComplete();
             }
         });
     }
