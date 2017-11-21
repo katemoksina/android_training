@@ -9,7 +9,7 @@ import dagger.Component;
  */
 
 @Singleton
-@Component(modules = {MyApplicationModule.class, TwitterModule.class, ApiModule.class})
+@Component(modules = {MyApplicationModule.class, TwitterModule.class, ApiModule.class, RxModule.class})
 public interface MyApplicationComponent {
     void inject(MainActivity target);
 

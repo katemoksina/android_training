@@ -16,8 +16,8 @@ import dagger.Provides;
 public class TwitterModule {
 
     @Provides @Singleton
-    public TweetListPresenter provideTwitterPresenter(TweetListService tweetListService){
-        return new TweetListPresenterImpl(tweetListService);
+    public TweetListPresenter provideTwitterPresenter(TweetListService tweetListService, ObservableConfigurer observableConfigurer){
+        return new TweetListPresenterImpl(tweetListService, observableConfigurer);
     }
 
     @Provides @Singleton

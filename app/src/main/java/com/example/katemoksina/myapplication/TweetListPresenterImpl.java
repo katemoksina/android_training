@@ -2,17 +2,10 @@ package com.example.katemoksina.myapplication;
 
 import com.example.katemoksina.myapplication.model.Tweet;
 
-
-import org.reactivestreams.Subscriber;
-import org.reactivestreams.Subscription;
-
 import java.util.List;
 
 import io.reactivex.Observable;
 import io.reactivex.observers.DefaultObserver;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 /**
  * Created by katemoksina on 20/11/2017.
@@ -21,10 +14,12 @@ import retrofit2.Response;
 public class TweetListPresenterImpl implements TweetListPresenter {
 
     private final TweetListService tweetListService;
+    private final ObservableConfigurer observableConfigurer;
     private TwitterListMVPView mvpView;
 
-    public TweetListPresenterImpl(TweetListService tweetListService){
+    public TweetListPresenterImpl(TweetListService tweetListService, ObservableConfigurer observableConfigurer){
         this.tweetListService = tweetListService;
+        this.observableConfigurer = observableConfigurer;
     }
     @Override
     public void getTweetList() {
@@ -33,22 +28,23 @@ public class TweetListPresenterImpl implements TweetListPresenter {
         }
         Observable<List<Tweet>> tweetListObservable = tweetListService.getTweets(mvpView.getListId(), mvpView.getTweetCount());
 
-        tweetListObservable.subscribe(new DefaultObserver<List<Tweet>>(){
-            @Override
-            public void onNext(List<Tweet> value) {
-                mvpView.onTweetsLoaded(value);
-            }
+        observableConfigurer.configureObservable(tweetListObservable)
+                .subscribe(new DefaultObserver<List<Tweet>>(){
+                    @Override
+                    public void onNext(List<Tweet> value) {
+                        mvpView.onTweetsLoaded(value);
+                    }
 
-            @Override
-            public void onError(Throwable e) {
-                mvpView.onTweetsLoadError(e);
-            }
+                    @Override
+                    public void onError(Throwable e) {
+                        mvpView.onTweetsLoadError(e);
+                    }
 
-            @Override
-            public void onComplete() {
-                mvpView.onTweetsLoadComplete();
-            }
-        });
+                    @Override
+                    public void onComplete() {
+                        mvpView.onTweetsLoadComplete();
+                    }
+                });
     }
 
     @Override
